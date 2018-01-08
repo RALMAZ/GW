@@ -40,6 +40,11 @@ Macaw::post('/auth/register', function() {
 	$db = DB::getInstance();
 });
 
+Macaw::post('/auth/exit', function() {
+	// Убиваем токен и шлем ответ на очистку локалсторейдж и vuex, разлогин
+	$db = DB::getInstance();
+});
+
 // Кабинет пользователя
 require_once '../game/Cabinet.php';
 
