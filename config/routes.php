@@ -22,19 +22,21 @@ Macaw::post('/auth/login', function() {
 		$send_pass = sha1($salt . $send_pass);
 
 		$db = DB::getInstance();
-		$db->table('users')->where([ ['login', $send_login], ['pass', $send_pass]])->get();
+		$db->table('users')->where([['login', $send_login], ['pass', $send_pass]])->get();
 		$result = $db->getCount();
 		if ($result == 1) {
-			// Это все дурости для теста логинки, в реальности назад будет возвращен код ответа
-			echo 'Успешный вход дружище';
+			// Если ок - генерируем-сохраняем-выдаем токен
+			// Хранится в формате - токен-логин-время последней активности-время истечения
+			echo 'Токен 09345340953409593045';
 		} else {
-			echo 'Я тебя не знаю';
+			echo 'DEAD_TOKEN';
 		}
 	}
 });
 
 Macaw::post('/auth/register', function() {
 	// Регистрируем
+	// Потом, все потом) 
 	$db = DB::getInstance();
 });
 
