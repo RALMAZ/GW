@@ -1,6 +1,6 @@
 <?php
 
-namespace NoahBuscher\Macaw;
+namespace Routers;
 
 /**
  * @method static Macaw get(string $route, Callable $callback)
@@ -10,7 +10,7 @@ namespace NoahBuscher\Macaw;
  * @method static Macaw options(string $route, Callable $callback)
  * @method static Macaw head(string $route, Callable $callback)
  */
-class Macaw {
+class Router {
   public static $halts = false;
   public static $routes = array();
   public static $methods = array();

@@ -1,48 +1,79 @@
 <?php
 // Комментирую как хочу, проект некомерческий, идите в пень
-use raelgc\view\Template;
-use NoahBuscher\Macaw\Macaw;
+use Routers\Router;
 
-Macaw::get('/', function() {
+Router::get('/', function() {
 	// Пробрасываем шутейку для апишки
+	echo 'Шутейка';
 });
 
-Macaw::post('/auth/login', function() {
+Router::post('/auth/login', function() {
 	// Авторизуем
 	if (isset($_POST['login']) && isset($_POST['pass'])) {
 		// Чистим, красим, поливаем..
-		$send_login = htmlspecialchars($_POST['login']);
-		$send_pass = htmlspecialchars($_POST['pass']);
-		$send_login = trim($send_login);
-		$send_pass = trim($send_pass);
+		$send_login = trim(htmlspecialchars($_POST['login']));
+		$send_pass = trim(htmlspecialchars($_POST['pass']));
 
 		// Достаем соль и щедро посыпаем
 		$config = parse_ini_file('../config/config.ini');
 		$salt = $config['salt'];
-		$send_pass = sha1($salt . $send_pass);
+		$send_pass = md5($salt.$send_pass);
 
 		$db = DB::getInstance();
-		$db->table('users')->where([['login', $send_login], ['pass', $send_pass]])->get();
-		$result = $db->getCount();
-		if ($result == 1) {
-			// Если ок - генерируем-сохраняем-выдаем токен
-			// Хранится в формате - токен-логин-время последней активности-время истечения
-			echo 'Токен 09345340953409593045';
+		$db->table('ra_users')->where([['login', $send_login], ['pass', $send_pass]])->get();
+		if ($db->getCount() > 0) {
+			// Проверяем есть ли уже токен
+			$current = $db->table('ra_tokens')->where('login', $send_login)->get();
+			if ($db->getCount() > 0) {
+				foreach ($current as $row) {
+            		$curr_token = $row->token;
+            	}
+				// Выдаем уже готовый токен
+				echo $curr_token;
+			} else {
+				// Или выдаем новый
+				$newtoken = uniqid('token_');
+				// Хранится в формате - токен-логин-время последней активности
+				$tokenExpired = $config['token_expired']; // Время истечения токена от последней активности в часах
+				$last_active = time(); //Y-m-d H:i:s
+	
+				$db->insert('ra_tokens',
+            	[
+            	    'token' => $newtoken,
+            	    'login' => $send_login,
+            	    'last_active' => $last_active
+            	]);
+	
+				echo $newtoken;
+			}
+			
 		} else {
-			echo 'DEAD_TOKEN';
+			echo 'UNDEAD_TOKEN';
 		}
 	}
 });
 
-Macaw::post('/auth/register', function() {
+Router::post('/auth/register', function() {
 	// Регистрируем
 	// Потом, все потом) 
 	$db = DB::getInstance();
 });
 
-Macaw::post('/auth/exit', function() {
+Router::post('/auth/exit', function() {
 	// Убиваем токен и шлем ответ на очистку локалсторейдж и vuex, разлогин
 	$db = DB::getInstance();
+});
+
+Router::post('/auth/token', function() {
+	$token = $_POST['token'];
+	$login = $_POST['login'];
+	$db = DB::getInstance();
+	$db->table('ra_tokens')->where([['login', $login], ['token', $token]])->get();
+	if ($db->getCount() > 0) {
+		echo 'Токен активен';
+	} else {
+		echo 'Токен неактивен';
+	}
 });
 
 // Кабинет пользователя
@@ -66,7 +97,9 @@ require_once '../game/Cabinet.php';
 
 // + Боты - главы Орды со своими войсками, главы Альянса, главы нейтралов
 
-Macaw::error(function() {
+// + Союзы со своими крепостями и различными постройками в них
+
+Router::error(function() {
     echo 'Тут будет 404 страница с рожами :)';
 });
-Macaw::dispatch();
+Router::dispatch();

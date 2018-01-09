@@ -1,10 +1,9 @@
 <?php
 // Кабинет юзверя. Сладкий и манящий.
-use raelgc\view\Template;
-use NoahBuscher\Macaw\Macaw;
+use Routers\Router;
 
 
-Macaw::get('/game', function() {
+Router::get('/game', function() {
 	// Данные по главной странице юзверя
 	$db = DB::getInstance();
 });
