@@ -3,8 +3,8 @@
 use Routers\Router;
 
 Router::get('/', function() {
-	// Пробрасываем шутейку для апишки
-	echo 'Шутейка';
+	// Главная
+	echo 'API открыта для всех и каждого, а документацию не завезли :)';
 });
 
 Router::post('/auth/login', function() {
@@ -23,7 +23,8 @@ Router::post('/auth/login', function() {
 		$db->table('ra_users')->where([['login', $send_login], ['pass', $send_pass]])->get();
 		if ($db->getCount() > 0) {
 			// Проверяем есть ли уже токен
-			$current = $db->table('ra_tokens')->where('login', $send_login)->get();
+			$ip = $_SERVER['REMOTE_ADDR'];
+			$current = $db->table('ra_tokens')->where([['login', $send_login], ['ip', $ip]])->get();
 			if ($db->getCount() > 0) {
 				foreach ($current as $row) {
             		$curr_token = $row->token;
@@ -32,15 +33,24 @@ Router::post('/auth/login', function() {
 				echo $curr_token;
 			} else {
 				// Или выдаем новый
-				$newtoken = uniqid('token_');
+
+				// Месим строку токена
+				$token_time = time();
+				$token_rand1 = rand(1,8999);
+				$token_rand2 = rand(245,6783);
+				$token_mix = $token_time + $token_rand1 + $token_rand2;
+				$newtoken = 'token_'.md5($token_mix);
+
 				// Хранится в формате - токен-логин-время последней активности
-				$tokenExpired = $config['token_expired']; // Время истечения токена от последней активности в часах
+				$tokenExpired = $config['token_expired']; // Время истечения токена от последней активности в часах (использую позже)
 				$last_active = time(); //Y-m-d H:i:s
+				$new_ip = $_SERVER['REMOTE_ADDR'];
 	
 				$db->insert('ra_tokens',
             	[
             	    'token' => $newtoken,
             	    'login' => $send_login,
+            	    'ip' => $new_ip,
             	    'last_active' => $last_active
             	]);
 	
@@ -65,14 +75,14 @@ Router::post('/auth/exit', function() {
 });
 
 Router::post('/auth/token', function() {
-	$token = $_POST['token'];
-	$login = $_POST['login'];
+	$token = trim(htmlspecialchars($_POST['token']));
+	$login = trim(htmlspecialchars($_POST['login']));
 	$db = DB::getInstance();
 	$db->table('ra_tokens')->where([['login', $login], ['token', $token]])->get();
 	if ($db->getCount() > 0) {
-		echo 'Токен активен';
+		echo 'access';
 	} else {
-		echo 'Токен неактивен';
+		echo 'false';
 	}
 });
 
