@@ -4,7 +4,7 @@ use Routers\Router;
 
 Router::get('/', function() {
 	// Главная
-	echo '{"response": "API открыта для всех и каждого, а документацию не завезли :)"}';
+	echo 'API открыта для всех и каждого, а документацию не завезли :)';
 });
 
 Router::post('/auth/login', function() {
@@ -38,7 +38,7 @@ Router::post('/auth/login', function() {
 				$token_time = time();
 				$token_rand1 = rand(1,8999);
 				$token_rand2 = rand(245,6783);
-				$token_mix = $token_time + $token_rand1 + $token_rand2;
+				$token_mix = $token_rand1.$token_time.$token_rand2;
 				$newtoken = 'token_'.md5($token_mix);
 
 				// Хранится в формате - токен-логин-время последней активности
