@@ -4,7 +4,7 @@ use Routers\Router;
 
 Router::get('/', function() {
 	// Главная
-	echo 'API открыта для всех и каждого, а документацию не завезли :)';
+	echo '{"response": "API открыта для всех и каждого, а документацию не завезли :)"}';
 });
 
 Router::post('/auth/login', function() {
@@ -43,7 +43,7 @@ Router::post('/auth/login', function() {
 
 				// Хранится в формате - токен-логин-время последней активности
 				$tokenExpired = $config['token_expired']; // Время истечения токена от последней активности в часах (использую позже)
-				$last_active = time(); //Y-m-d H:i:s
+				$last_active = time(); //Y-m-d H:i:s потом
 				$new_ip = $_SERVER['REMOTE_ADDR'];
 	
 				$db->insert('ra_tokens',
