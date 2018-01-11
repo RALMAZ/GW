@@ -20,8 +20,11 @@ Router::post('/auth/login', function() {
 		$send_pass = md5($salt.$send_pass);
 
 		$db = DB::getInstance();
-		$db->table('ra_users')->where([['login', $send_login], ['pass', $send_pass]])->get();
+		$getid = $db->table('ra_users')->where([['login', $send_login], ['pass', $send_pass]])->get();
 		if ($db->getCount() > 0) {
+			foreach ($getid as $ro) {
+            	$id_user = $ro->id;
+            }
 			// Проверяем есть ли уже токен
 			$ip = $_SERVER['REMOTE_ADDR'];
 			$current = $db->table('ra_tokens')->where([['login', $send_login], ['ip', $ip]])->get();
@@ -49,6 +52,7 @@ Router::post('/auth/login', function() {
 				$db->insert('ra_tokens',
             	[
             	    'token' => $newtoken,
+            	    'id_user' => $id_user,
             	    'login' => $send_login,
             	    'ip' => $new_ip,
             	    'last_active' => $last_active
@@ -70,17 +74,52 @@ Router::post('/auth/register', function() {
 });
 
 Router::post('/auth/exit', function() {
-	// Убиваем токен и шлем ответ на очистку локалсторейдж и vuex, разлогин
+	// При выходе получаем токен
+	$token = trim(htmlspecialchars($_POST['token']));
+	$ip = $_SERVER['REMOTE_ADDR'];
 	$db = DB::getInstance();
+
+	$token_data = $db->table('ra_tokens')->where([['token', $token], ['ip', $ip]])->get();
+
+	if ($db->getCount() > 0) {
+		// Если такой токен существует получаем его инфомрацию
+		foreach ($token_data as $row) {
+			$id_token = $row->id;
+			$id_user = $row->id_user;
+          	$login = $row->login;
+          	$last_active = $row->last_active;
+        }
+
+        // Перед удалением токена сохраним время его последней активности
+		$db->update('ra_users',
+		[
+			'last_active' => $last_active
+		],$id_user);
+
+		// Удаляем токен
+		$db->delete('ra_tokens',$id_token);
+	}
 });
 
 Router::post('/auth/token', function() {
+	// Получаем токен
 	$token = trim(htmlspecialchars($_POST['token']));
-	$login = trim(htmlspecialchars($_POST['login']));
 	$ip = $_SERVER['REMOTE_ADDR'];
+	$last_active = time();
 	$db = DB::getInstance();
-	$db->table('ra_tokens')->where([['login', $login], ['token', $token], ['ip', $ip]])->get();
+
+	// Проверяем токен
+	$token = $db->table('ra_tokens')->where([['token', $token], ['ip', $ip]])->get();
 	if ($db->getCount() > 0) {
+		foreach ($token as $row) {
+			$id_token = $row->id;
+        }
+
+		$db->update('ra_tokens',
+		[
+			'last_active' => $last_active
+		],$id_token);
+
 		echo 'access';
 	} else {
 		echo 'denied';
