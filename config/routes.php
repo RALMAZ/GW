@@ -77,12 +77,13 @@ Router::post('/auth/exit', function() {
 Router::post('/auth/token', function() {
 	$token = trim(htmlspecialchars($_POST['token']));
 	$login = trim(htmlspecialchars($_POST['login']));
+	$ip = $_SERVER['REMOTE_ADDR'];
 	$db = DB::getInstance();
-	$db->table('ra_tokens')->where([['login', $login], ['token', $token]])->get();
+	$db->table('ra_tokens')->where([['login', $login], ['token', $token], ['ip', $ip]])->get();
 	if ($db->getCount() > 0) {
 		echo 'access';
 	} else {
-		echo 'false';
+		echo 'denied';
 	}
 });
 
