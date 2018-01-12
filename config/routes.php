@@ -1,5 +1,4 @@
 <?php
-// Комментирую как хочу, проект некомерческий, идите в пень
 use Routers\Router;
 
 Router::get('/', function() {
@@ -90,7 +89,7 @@ Router::post('/auth/exit', function() {
           	$last_active = $row->last_active;
         }
 
-        // Перед удалением токена сохраним время его последней активности
+        // Перед удалением токена сохраним пользователю время его последней активности
 		$db->update('ra_users',
 		[
 			'last_active' => $last_active
