@@ -4,6 +4,6 @@ use Routers\Router;
 
 
 Router::get('/game', function() {
-	// Данные по главной странице юзверя
+	// Данные по главной страницы
 	$db = DB::getInstance();
 });
