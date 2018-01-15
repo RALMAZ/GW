@@ -1,9 +1,18 @@
 <?php
+use View\Tpl;
 use Routers\Router;
 
 Router::get('/', function() {
 	// Главная
-	echo 'API открыта для всех и каждого, а документацию не завезли :)';
+	//echo '42';
+	$tpl = new Tpl("../tpl/token.html");
+	$tpl->LOGIN = '324';
+    $tpl->BALANCE = '25252';
+    $tpl->block("USERINFO");
+
+	$tpl->TOKEN = 'Token';
+	$tpl->ACCESS = 'granted';
+	$tpl->show();
 });
 
 Router::post('/auth/login', function() {
@@ -32,7 +41,10 @@ Router::post('/auth/login', function() {
             		$curr_token = $row->token;
             	}
 				// Выдаем уже готовый токен
-				echo $curr_token;
+				$tpl = new Tpl("../tpl/token.html");
+				$tpl->TOKEN = $curr_token;
+				$tpl->ACCESS = 'granted';
+				$tpl->show();
 			} else {
 				// Или выдаем новый
 
