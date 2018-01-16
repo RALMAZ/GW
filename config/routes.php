@@ -4,15 +4,8 @@ use Routers\Router;
 
 Router::get('/', function() {
 	// Главная
-	//echo '42';
-	$tpl = new Tpl("../tpl/token.html");
-	$tpl->LOGIN = '324';
-    $tpl->BALANCE = '25252';
-    $tpl->block("USERINFO");
-
-	$tpl->TOKEN = 'Token';
-	$tpl->ACCESS = 'granted';
-	$tpl->show();
+	print_r('42');
+	
 });
 
 Router::post('/auth/login', function() {
@@ -42,8 +35,11 @@ Router::post('/auth/login', function() {
             	}
 				// Выдаем уже готовый токен
 				$tpl = new Tpl("../tpl/token.html");
+				$tpl->LOGIN = $send_login;
+    			$tpl->BALANCE = '1';
+    			$tpl->block("USERINFO");
+
 				$tpl->TOKEN = $curr_token;
-				$tpl->ACCESS = 'granted';
 				$tpl->show();
 			} else {
 				// Или выдаем новый
@@ -69,11 +65,19 @@ Router::post('/auth/login', function() {
             	    'last_active' => $last_active
             	]);
 	
-				echo $newtoken;
+				$tpl = new Tpl("../tpl/token.html");
+				$tpl->LOGIN = $send_login;
+    			$tpl->BALANCE = '1';
+    			$tpl->block("USERINFO");
+
+				$tpl->TOKEN = $newtoken;
+				$tpl->show();
 			}
 			
 		} else {
-			echo 'UNDEAD_TOKEN';
+			$tpl = new Tpl("../tpl/token.html");
+			$tpl->TOKEN = 'DEAD_TOKEN';
+			$tpl->show();
 		}
 	}
 });
