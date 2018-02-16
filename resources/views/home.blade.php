@@ -15,6 +15,7 @@
                     @endif
 
                     Вы вошли!
+                    <example-component></example-component>
                 </div>
             </div>
         </div>
