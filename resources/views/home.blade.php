@@ -15,7 +15,7 @@
                     @endif
 
                     Вы вошли!
-                    <example-component></example-component>
+                    <register-game></register-game>
                 </div>
             </div>
         </div>

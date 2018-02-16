@@ -21,14 +21,29 @@ import uikit from 'uikit';
 import 'uikit/dist/css/uikit.min.css';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
+import Vuex from 'vuex';
 
+Vue.use(Vuex);
 Vue.use(ElementUI);
 
-import ExampleComponent from './components/ExampleComponent.vue';
+import RegisterGame from './components/RegisterGame.vue';
+
+
+const store = new Vuex.Store({
+  state: {
+    token: 'tested'
+  },
+  mutations: {
+    loadToken (loaded) {
+      state.token = token;
+    }
+  }
+});
 
 const app = new Vue({
+	store,
     el: '#app',
     components: {
-    	ExampleComponent
+    	RegisterGame
     }
 });
