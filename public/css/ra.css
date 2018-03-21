@@ -1,0 +1,17 @@
+.ra-grid-1 {
+  display: grid;
+  width: 100%;
+  max-width: 1170px;
+  margin: 0 auto;
+  grid-template-columns: repeat(auto-fill, minmax(9em, 1fr));
+  grid-gap: 20px;
+}
+
+.ra-grid-2 {
+  display: grid;
+  width: 100%;
+  max-width: 1170px;
+  margin: 0 auto;
+  grid-template-columns: repeat(auto-fill, minmax(15em, 1fr));
+  grid-gap: 20px;
+}
