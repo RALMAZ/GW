@@ -1,0 +1,22 @@
+{
+  "name": "gw",
+  "version": "1.0.0",
+  "description": "Browser game",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RALMAZ/GW.git"
+  },
+  "author": "RALMAZ",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/RALMAZ/GW/issues"
+  },
+  "homepage": "https://github.com/RALMAZ/GW#readme",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
+}
