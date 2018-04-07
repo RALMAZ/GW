@@ -1,4 +1,3 @@
 RewriteEngine On
-# All to the index.php (God Save the Queen)
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule . index.php [L]
