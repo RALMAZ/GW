@@ -9,7 +9,8 @@ const app = express();
 /*
 // Middleware
 const logger = (req, res, next) => {
-	console.log('Logging...');
+	console.log('Request '+ req);
+	console.log('Response '+ req);
 	next();
 }
 
