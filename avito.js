@@ -39,52 +39,56 @@ const fs = require('fs');
   for (let index = 0; index < links.length; index++) {
     let linkToItem = 'https://www.avito.ru' + links[index];
     await page.goto(linkToItem);
-
-    var newItem = {};
-
-    // ID
+    
+    // ID helper
     var idRegex = /\d{10}/g;
     var idFound = linkToItem.match(idRegex);
     if (idFound === null) {
       continue;
     }
-    newItem.id = idFound[0];
 
-    // Title
-    newItem.title = await page.evaluate(_ => {
-      return document.querySelector('h1 span').innerHTML;
-    });
+    // New item
+    var newItem = {
+      id: idFound[0],
 
-    // Price
-    newItem.price = await page.evaluate(_ => {
-      return document.querySelector('p span span').innerHTML;
-    });
+      title: await page.evaluate(_ => {
+        return document.querySelector('h1 span').innerHTML;
+      }),
 
-    // Photo
-    newItem.img = await page.evaluate(_ => {
-      return document.querySelector('ul li div div img').src;
-    });
+      price: await page.evaluate(_ => {
+        return document.querySelector('p span span').innerHTML;
+      }),
 
-    // Location
-    newItem.location = await page.evaluate(_ => {
-      return document.querySelector('button span').innerHTML;
-    });
+      img: await page.evaluate(_ => {
+        let img = document.querySelector('ul li div div img').src;
+        if (!img) {
+          return '';
+        } else {
+          return img;
+        }
+      }),
 
-    // Phone
-    newItem.phone = await page.evaluate(_ => {
-      let phone = document.querySelector('div[data-marker="item-contact-bar"] div div a').href;
-      return phone.replace('tel:', '');
-    });
+      location: await page.evaluate(_ => {
+        return document.querySelector('button span').innerHTML;
+      }),
 
-    // Description
-    newItem.desc = await page.evaluate(_ => {
-      return document.querySelector('meta[itemprop="description"]').content;
-    });
+      phone: await page.evaluate(_ => {
+        let phone = document.querySelector('div[data-marker="item-contact-bar"] div div a').href;
+        return phone.replace('tel:', '');
+      }),
 
-    // Username
-    newItem.user = await page.evaluate(_ => {
-      return document.querySelector('div[data-marker="item-contact-bar"] div a div span').innerHTML;
-    });
+      desc: await page.evaluate(_ => {
+        return document.querySelector('meta[itemprop="description"]').content;
+      }),
+
+      user: await page.evaluate(_ => {
+        return document.querySelector('div[data-marker="item-contact-bar"] div a div span').innerHTML;
+      })
+    };
+
+    if (newItem.img == '') {
+      continue;
+    }
     
     result.push(newItem);
 
@@ -93,6 +97,6 @@ const fs = require('fs');
   }
   
   // @TODO Add axios
-  // fs.writeFile('avito.json', JSON.stringify(result), () => {});
+  fs.writeFile('avito.json', JSON.stringify(result), () => {});
   await browser.close();
 })();

@@ -1,0 +1,22 @@
+{
+  "name": "puppeteer-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "avito.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RALMAZ/Puppeteer-test.git"
+  },
+  "author": "RALMAZ",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/RALMAZ/Puppeteer-test/issues"
+  },
+  "homepage": "https://github.com/RALMAZ/Puppeteer-test#readme",
+  "dependencies": {
+    "puppeteer": "^1.17.0"
+  }
+}
