@@ -52,11 +52,11 @@ const fs = require('fs');
       id: idFound[0],
 
       title: await page.evaluate(_ => {
-        return document.querySelector('h1 span').innerHTML;
+        return document.querySelector('h1 span').innerText;
       }),
 
       price: await page.evaluate(_ => {
-        return document.querySelector('p span span').innerHTML;
+        return document.querySelector('p span span').innerText;
       }),
 
       img: await page.evaluate(_ => {
@@ -69,7 +69,7 @@ const fs = require('fs');
       }),
 
       location: await page.evaluate(_ => {
-        return document.querySelector('button span').innerHTML;
+        return document.querySelector('button span').innerText;
       }),
 
       phone: await page.evaluate(_ => {
@@ -82,8 +82,10 @@ const fs = require('fs');
       }),
 
       user: await page.evaluate(_ => {
-        return document.querySelector('div[data-marker="item-contact-bar"] div a div span').innerHTML;
-      })
+        return document.querySelector('div[data-marker="item-contact-bar"] div a div span').innerText;
+      }),
+
+      source: 'avito'
     };
 
     if (newItem.img == '') {
