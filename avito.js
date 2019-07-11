@@ -53,11 +53,11 @@ const fs = require('fs');
 
       title: await page.evaluate(_ => {
         return document.querySelector('h1 span').innerText;
-      }),
+      }).catch((e) => console.log(e)),
 
       price: await page.evaluate(_ => {
         return document.querySelector('p span span').innerText;
-      }),
+      }).catch((e) => console.log(e)),
 
       img: await page.evaluate(_ => {
         let img = document.querySelector('ul li div div img').src;
@@ -66,24 +66,24 @@ const fs = require('fs');
         } else {
           return img;
         }
-      }),
+      }).catch((e) => console.log(e)),
 
       location: await page.evaluate(_ => {
         return document.querySelector('button span').innerText;
-      }),
+      }).catch((e) => console.log(e)),
 
       phone: await page.evaluate(_ => {
         let phone = document.querySelector('div[data-marker="item-contact-bar"] div div a').href;
         return phone.replace('tel:', '');
-      }),
+      }).catch((e) => console.log(e)),
 
       desc: await page.evaluate(_ => {
         return document.querySelector('meta[itemprop="description"]').content;
-      }),
+      }).catch((e) => console.log(e)),
 
       user: await page.evaluate(_ => {
         return document.querySelector('div[data-marker="item-contact-bar"] div a div span').innerText;
-      }),
+      }).catch((e) => console.log(e)),
 
       source: 'avito'
     };

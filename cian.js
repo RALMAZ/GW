@@ -13,22 +13,19 @@ const fs = require('fs');
 
   var links = [];
 
-  for (let index = 0; index < 5; index++) {
-    var link;
-    if (index == 0) {
-      link = 'https://krimvsem.ru/search';
-    } else {
-      link = 'https://krimvsem.ru/search/iPage,' + String(index);
-    }
+  for (let index = 0; index < 3 /* 30 */; index++) {
+    var link = 'https://www.cian.ru/cat.php?deal_type=sale&engine_version=2&offer_type=flat&region=-1&room1=1&room2=1&room3=1&room4=1&room5=1&room6=1&room7=1&room9=1&p=' + String(index);
     
     await page.goto(link);
 
     // Cut links
     var dirtyLinks = await page.evaluate(_ => {
-      let dirtyArray = document.querySelectorAll('.middle h3 a');
+      let dirtyArray = document.querySelectorAll('#app div div div div div div div div div a');
       let testArray = [];
       for (let i = 0; i < dirtyArray.length; i++) {
-        testArray.push(dirtyArray[i].href);
+        if (~dirtyArray[i].href.indexOf('/flat/')) {
+          testArray.push(dirtyArray[i].href);
+        }
       }
       return testArray;
     });
@@ -36,7 +33,7 @@ const fs = require('fs');
   }
 
   // Array for items
-  var result = [];
+  /*var result = [];
 
   for (let index = 0; index < links.length; index++) {
     let linkToItem = links[index];
@@ -100,8 +97,8 @@ const fs = require('fs');
     
     result.push(newItem);
   }
-
+*/
   // @TODO Add axios
-  fs.writeFile('k1.json', JSON.stringify(result), () => {});
+  fs.writeFile('cian.json', JSON.stringify(links), () => {});
   await browser.close();
 })();
